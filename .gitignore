@@ -1,0 +1,10 @@
+.idea
+bin
+obj
+launchSettings.json
+*.user
+coverage.*.xml
+report
+tools
+/tests/coverage.info
+/tests/test-results.xml

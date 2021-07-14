@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FDE0F0D4-E28C-4ED5-A48D-078C71BB89FE}") = "AspNetCore.Middleware.Samples", "tests\AspNetCore.Middleware.Samples.csproj", "{FDE0F0D4-E28C-4ED5-A48D-078C71BB89FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "src\SampleApp.csproj", "{0689985A-FA65-487F-ADF7-2630B160D2BA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FDE0F0D4-E28C-4ED5-A48D-078C71BB89FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDE0F0D4-E28C-4ED5-A48D-078C71BB89FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDE0F0D4-E28C-4ED5-A48D-078C71BB89FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDE0F0D4-E28C-4ED5-A48D-078C71BB89FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0689985A-FA65-487F-ADF7-2630B160D2BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0689985A-FA65-487F-ADF7-2630B160D2BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0689985A-FA65-487F-ADF7-2630B160D2BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0689985A-FA65-487F-ADF7-2630B160D2BA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
