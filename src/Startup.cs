@@ -32,6 +32,7 @@ namespace SampleApp
                 .AddTransient<CookieVisitorTrackerMiddleware>()
                 .Configure<CookieVisitorTrackerMiddlewareOptions>(Configuration.GetSection("Visitor"))
                 .AddSingleton<RateLimiterMiddleware>()
+                .AddSingleton<RedisRateLimiterMiddleware>()
                 .Configure<RateLimiterMiddlewareOptions>(Configuration.GetSection("RateLimiter"))
                 .AddTransient<RedisCacheMiddleware>()
                 .Configure<RedisCacheMiddlewareOptions>(Configuration.GetSection("RedisCache"));
@@ -39,7 +40,6 @@ namespace SampleApp
             services
                 .AddSingleton<Task<IConnectionMultiplexer>>(async _ =>
                     await ConnectionMultiplexer.ConnectAsync(Configuration["RedisCache:ConnectionString"]))
-                .AddTransient<RedisCacheMiddleware>()
                 .AddTransient(async container =>
                 {
                     var connection = await container.GetRequiredService<Task<IConnectionMultiplexer>>();

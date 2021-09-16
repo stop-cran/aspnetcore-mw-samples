@@ -21,5 +21,11 @@ namespace SampleApp.Middleware
             return app.UseWhen(context => context.Features.Get<IVisitorIdFeature>()?.IsFirstTimeVisitor ?? false,
                 app => app.UseMiddleware<RateLimiterMiddleware>());
         }
+        
+        public static IApplicationBuilder UseDistributedRateLimiterForNewVisitors(this IApplicationBuilder app)
+        {
+            return app.UseWhen(context => context.Features.Get<IVisitorIdFeature>()?.IsFirstTimeVisitor ?? false,
+                app => app.UseMiddleware<RedisRateLimiterMiddleware>());
+        }
     }
 }
