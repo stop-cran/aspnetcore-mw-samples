@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using SampleApp.Awaitable;
 using SampleApp.Middleware;
 using Shouldly;
 using StackExchange.Redis;
@@ -43,7 +44,8 @@ namespace AspNetCore.Middleware.Samples
             // Given
             var middleware = new RedisCacheMiddleware(
                 new OptionsWrapper<RedisCacheMiddlewareOptions>(
-                    new RedisCacheMiddlewareOptions()), Task.FromResult(database.Object));
+                    new RedisCacheMiddlewareOptions()),
+                new DisposeResultAwaitable<IDatabase>(Task.FromResult(database.Object)));
             var ms = new MemoryStream();
 
             database.Setup(db => db.StringGetAsync(path, It.IsAny<CommandFlags>()))
@@ -53,7 +55,7 @@ namespace AspNetCore.Middleware.Samples
             response.Setup(r => r.BodyWriter).Returns(PipeWriter.Create(ms));
 
             // When
-            await middleware.InvokeAsync(context.Object, async _ => { });
+            await middleware.InvokeAsync(context.Object, _ => Task.CompletedTask);
 
             // Then
             ms.ReadToEnd().ShouldBe(responseText);
@@ -66,7 +68,8 @@ namespace AspNetCore.Middleware.Samples
             // Given
             var middleware = new RedisCacheMiddleware(
                 new OptionsWrapper<RedisCacheMiddlewareOptions>(
-                    new RedisCacheMiddlewareOptions()), Task.FromResult(database.Object));
+                    new RedisCacheMiddlewareOptions()),
+                new DisposeResultAwaitable<IDatabase>(Task.FromResult(database.Object)));
             var ms = new MemoryStream();
 
             request.Setup(r => r.Path).Returns(path);

@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using SampleApp.Awaitable;
 using StackExchange.Redis;
 
 namespace SampleApp.Middleware
@@ -10,11 +11,11 @@ namespace SampleApp.Middleware
     public class RedisCacheMiddleware : IMiddleware
     {
         private readonly IOptions<RedisCacheMiddlewareOptions> _options;
-        private readonly Task<IDatabase> _redisTask;
+        private readonly ITaskAwaitable<IDatabase> _redisTask;
 
         public RedisCacheMiddleware(
             IOptions<RedisCacheMiddlewareOptions> options,
-            Task<IDatabase> redisTask)
+            ITaskAwaitable<IDatabase> redisTask)
         {
             _options = options;
             _redisTask = redisTask;

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Prometheus;
+using SampleApp.Awaitable;
 using SampleApp.Middleware;
 using StackExchange.Redis;
 
@@ -28,7 +30,7 @@ namespace SampleApp
             services.AddControllers();
 
             services
-                .AddSingleton<Func<DateTime>>(() => DateTime.Now)
+                .AddTransient<ISystemClock, SystemClock>()
                 .AddTransient<CookieVisitorTrackerMiddleware>()
                 .Configure<CookieVisitorTrackerMiddlewareOptions>(Configuration.GetSection("Visitor"))
                 .AddSingleton<RateLimiterMiddleware>()
@@ -38,11 +40,11 @@ namespace SampleApp
                 .Configure<RedisCacheMiddlewareOptions>(Configuration.GetSection("RedisCache"));
 
             services
-                .AddSingleton<Task<IConnectionMultiplexer>>(async _ =>
+                .AddSingletonTaskAwaitable<IConnectionMultiplexer>(async _ =>
                     await ConnectionMultiplexer.ConnectAsync(Configuration["RedisCache:ConnectionString"]))
-                .AddTransient(async container =>
+                .AddTransientTaskAwaitable(async container =>
                 {
-                    var connection = await container.GetRequiredService<Task<IConnectionMultiplexer>>();
+                    var connection = await container.GetRequiredService<ITaskAwaitable<IConnectionMultiplexer>>();
 
                     return connection.GetDatabase();
                 });

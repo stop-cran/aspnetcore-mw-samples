@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using SampleApp.Middleware;
 
@@ -6,11 +7,11 @@ namespace SampleApp.Controllers
 {
     public class SampleController : Controller
     {
-        private readonly Func<DateTime> _nowFactory;
+        private readonly ISystemClock _systemClock;
 
-        public SampleController(Func<DateTime> nowFactory)
+        public SampleController(ISystemClock systemClock)
         {
-            _nowFactory = nowFactory;
+            _systemClock = systemClock;
         }
 
         [HttpGet]
@@ -19,14 +20,14 @@ namespace SampleApp.Controllers
         {
             var feature = HttpContext.Features.Get<IVisitorIdFeature>();
 
-            return $"Current date and time: {_nowFactory()}. Visitor id: {feature?.VisitorId}.";
+            return $"Current date and time: {_systemClock.UtcNow.DateTime.ToLocalTime()}. Visitor id: {feature?.VisitorId}.";
         }
 
         [HttpGet]
         [Route("/test_cache")]
         public string CurrentDateTime()
         {
-            return $"Current date and time: {_nowFactory()}.";
+            return $"Current date and time: {_systemClock.UtcNow.DateTime.ToLocalTime()}.";
         }
     }
 }

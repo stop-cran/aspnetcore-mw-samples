@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using SampleApp.Awaitable;
 using SampleApp.Middleware;
 using Shouldly;
 using StackExchange.Redis;
@@ -35,7 +36,7 @@ namespace AspNetCore.Middleware.Samples
                         .UseTestServer()
                         .ConfigureServices(services =>
                             services
-                                .AddSingleton<Task<IConnectionMultiplexer>>(async _ =>
+                                .AddSingletonTaskAwaitable<IConnectionMultiplexer>(async _ =>
                                     await ConnectionMultiplexer.ConnectAsync("localhost"))
                                 .AddTransient<RedisCacheMiddleware>()
                                 .AddSingleton<IOptions<RedisCacheMiddlewareOptions>>(
@@ -44,9 +45,9 @@ namespace AspNetCore.Middleware.Samples
                                         {
                                             Ttl = TimeSpan.FromSeconds(2)
                                         }))
-                                .AddTransient(async container =>
+                                .AddTransientTaskAwaitable(async container =>
                                 {
-                                    var connection = await container.GetRequiredService<Task<IConnectionMultiplexer>>();
+                                    var connection = await container.GetRequiredService<ITaskAwaitable<IConnectionMultiplexer>>();
 
                                     return connection.GetDatabase();
                                 })
